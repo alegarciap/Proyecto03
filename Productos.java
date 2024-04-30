@@ -9,7 +9,7 @@ import objetosNegocio.Producto;
 
 /**
  *
- * @author alega
+ * @author alega prueba
  */
 public class Productos {
     
@@ -25,7 +25,7 @@ public class Productos {
         }
         
         if (!producto.getClave().matches("[A-Z]{2}[0-9]{3}")) {
-            throw new ProductoInvalidoException("La clave del producto no es v·lida.");
+            throw new ProductoInvalidoException("La clave del producto no es v√°lida.");
         }
         
         if (producto.getNombre() == null || producto.getTipo() == null || producto.getUnidad() == null) {
@@ -58,7 +58,7 @@ public class Productos {
             throw new ProductoNoEncontradoException("El producto no existe.");
         }
         
-        // AquÌ falta la parte de verificar que el producto cumpla con las condiciones
+        // Aqu√≠ falta la parte de verificar que el producto cumpla con las condiciones
         productos.set(productos.indexOf(producto), producto);
     }
     
