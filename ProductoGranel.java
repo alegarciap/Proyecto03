@@ -4,12 +4,11 @@ package objetosNegocio;
  * Clase que representa un producto a granel, que es un tipo de producto.
  * Hereda de la clase Producto.
  * 
- * @author Alejandra García Preciado
+ * @author Alejandra GarcÃ­a Preciado
  */
 public class ProductoGranel extends Producto {
     
     // Atributos
-    private double existencia;
     private float cantidad;
     
     // Constructores
@@ -20,12 +19,10 @@ public class ProductoGranel extends Producto {
      * @param tipo El tipo del producto a granel.
      * @param unidad La unidad del producto a granel.
      * @param cantidad La cantidad del producto a granel.
-     * @param existencia
      */
-    public ProductoGranel(String clave, String nombre, String tipo, String unidad, float cantidad, double existencia) {
+    public ProductoGranel(String clave, String nombre, String tipo, String unidad, float cantidad) {
         super(clave, nombre, tipo, unidad);
         this.cantidad = cantidad;
-        this.existencia = existencia;
     }
     
     public float getCantidad() {
@@ -36,23 +33,15 @@ public class ProductoGranel extends Producto {
         this.cantidad = cantidad;
     }
     
-    public double getExistencia() {
-        return existencia;
-    }
-    
-    public void setExistencia(double existencia) {
-        this.existencia = existencia;
-    }
-    
-    // Método toString
+    // MÃ©todo toString
     /**
-     * Devuelve una representación en forma de cadena de este ProductoGranel.
+     * Devuelve una representaciÃ³n en forma de cadena de este ProductoGranel.
      * 
      * @return Una cadena que contiene los valores de los atributos del ProductoGranel.
      */
     @Override
     public String toString(){
-        return super.toString() + "," + existencia;
+        return super.toString() + "," + cantidad;
     }
     
 }
