@@ -1,6 +1,8 @@
 package abarrotesPersistencia;
 
 import excepciones.InventarioInvalidoException;
+import excepciones.ProductoExistenteException;
+import excepciones.ProductoInvalidoException;
 import excepciones.ProductoNoEncontradoException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +20,27 @@ public class ProductosGranel {
         this.productosGranel = new ArrayList<>();
     }
     
-    public void agregarProductosGranel(ProductoGranel productoGranel) {
-        // Aquí falta la parte de verificar que el producto cumpla con las condiciones
+    public void agregarProductoGranel(ProductoGranel productoGranel) throws ProductoExistenteException, ProductoInvalidoException {
+        if (productosGranel.contains(productoGranel)) {
+            throw new ProductoExistenteException("El producto ya existe.");
+        }
+
+        if (!productoGranel.getClave().matches("[A-Z]{2}[0-9]{3}")) {
+            throw new ProductoInvalidoException("La clave del producto no es vÃ¡lida.");
+        }
+
+        if (productoGranel.getNombre() == null || productoGranel.getTipo() == null || productoGranel.getUnidad() == null) {
+            throw new ProductoInvalidoException("El producto debe tener nombre, tipo y unidad.");
+        }
+
+        if (!productoGranel.getUnidad().equals("kg") && !productoGranel.getUnidad().equals("l")) {
+            throw new ProductoInvalidoException("La unidad del producto debe ser kg o l");
+        }
+
+        if (!productoGranel.getTipo().equals("E") && !productoGranel.getTipo().equals("G")) {
+            throw new ProductoInvalidoException("El tipo del producto debe ser E o G.");
+        }
+        
         productosGranel.add(productoGranel);
     }
     
@@ -32,19 +53,17 @@ public class ProductosGranel {
         throw new ProductoNoEncontradoException("El producto granel no existe");
     }
     
-    public void actualizarInventario(ProductoGranel productoGranel, float cantidad) throws ProductoNoEncontradoException, InventarioInvalidoException {
-        // Aquí falta la parte de verificar que el producto cumpla con las condiciones
-        
+    public void actualizarInventario(ProductoGranel productoGranel, double existencia) throws ProductoNoEncontradoException, InventarioInvalidoException {
         int indiceProducto = productosGranel.indexOf(productoGranel);
         if (indiceProducto < 0) {
             throw new ProductoNoEncontradoException("El producto granel no existe.");
         }
         
-        if (cantidad < 0) {
+        if (existencia < 0) {
             throw new InventarioInvalidoException("La cantidad a agregar no puede ser negativa.");
         }
         
-        ProductoGranel productoGranelActualizado = new ProductoGranel(productoGranel.getClave(), productoGranel.getNombre(), productoGranel.getTipo(), productoGranel.getUnidad(), productoGranel.getCantidad());
+        ProductoGranel productoGranelActualizado = new ProductoGranel(productoGranel.getClave(), productoGranel.getNombre(), productoGranel.getTipo(), productoGranel.getUnidad(), productoGranel.getCantidad(), productoGranel.getExistencia() + existencia);
         productosGranel.set(indiceProducto, productoGranelActualizado);
     }
     
