@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import objetosNegocio.MovimientoGranel;
-import objetosNegocio.Producto;
 import objetosNegocio.ProductoGranel;
 
 /**
@@ -18,39 +17,70 @@ public class MovimientosGranel {
     private List<MovimientoGranel> ventas;
     private ProductoGranel productosGranel;
     
+    private static final float LIMITE_MIN_KG = 300.0f;
+    private static final float LIMITE_MAX_KG = 1500.0f;
+    private static final float LIMITE_MIN_LT = 900.0f;
+    private static final float LIMITE_MAX_LT = 3000.0f;
+    
     public MovimientosGranel(ProductoGranel productosGranel) {
         this.compras = new ArrayList<>();
         this.ventas = new ArrayList<>();
         this.productosGranel = productosGranel;
     }
     
+    // metodo para serializar la informacion
+    
     public void agregarComprasGranel(MovimientoGranel movimientoGranel) throws MovimientoInvalidoException {
-        
-        // solicitar información del movimiento (clave, producto, fecha, cantidad) el tipo = compra y el status = falso
-        // MovimientoGranel compra = new MovimientoGranel();
-        // compra.getClaveMov();
-        // compra.getProductoGranel();
-        // compra.getFecha();
-        // compra.getProductoGranel().getCantidad();
-        // compra.setTipoMov(compra);
-        // compra.setStatus(false);
-        
-        // verificar la fecha del registro
-        if (movimientoGranel.getFecha().getAnio()!= LocalDate.now().getYear() || movimientoGranel.getFecha().getMes()!= LocalDate.now().getMonthValue() || movimientoGranel.getFecha().after(LocalDate.now())) {
-            throw new MovimientoInvalidoException("La fecha del movimiento debe estar dentro del mes actual y no después de la fecha actual.");
+
+        // verificar que el producto esté en el catálogo
+        if (!ProductosGranel.productosGranel.contains(movimientoGranel.getProductoGranel())) {
+            throw new MovimientoInvalidoException("El producto no se encuentra en el catálogo.");
         }
         
-        // verificar que el producto granel a comprar esté en el catálogo (lista de productos)
-        
+        // verificar la fecha del registro
+        if (movimientoGranel.getFecha().getAnio() != LocalDate.now().getYear() || movimientoGranel.getFecha().getMes() != LocalDate.now().getMonthValue() || movimientoGranel.getFecha().after(LocalDate.now())) {
+            throw new MovimientoInvalidoException("La fecha del movimiento debe estar dentro del mes actual y no después de la fecha actual.");
+        }
+
         // verificar que no haya otro movimiento de ese producto ese día 
-        
+        for (MovimientoGranel movimiento : compras) {
+            if (movimiento.getProductoGranel().equals(movimientoGranel.getProductoGranel()) && movimiento.getFecha().equals(movimientoGranel.getFecha())) {
+                throw new MovimientoInvalidoException("Ya hay un movimiento de ese producto en la fecha especificada.");
+            }
+        }
+
         // verificar que al comprar el producto granel la cantidad total no sobrepase de 1500 o 3000
-        
-        // si el producto a comprar tiene existencia en el inventario lo actualiza (sumarle a la existencia)
-        
-        // si el producto no tiene existencia, lo agrega e inicializa el conteo (1)
-        
-        compras.add(movimientoGranel); // y se supone que tambien se agrega a productosGranel (el inventario)
+        int cantidadTotal = 0;
+        for (MovimientoGranel movimiento : compras) {
+            if (movimiento.getProductoGranel().equals(movimientoGranel.getProductoGranel())) {
+                cantidadTotal += movimiento.getProductoGranel().getCantidad();
+            }
+        }
+        cantidadTotal += movimientoGranel.getProductoGranel().getCantidad();
+
+        if ("kg".equals(movimientoGranel.getProductoGranel().getUnidad())) {
+            if (cantidadTotal > LIMITE_MAX_KG) {
+                throw new MovimientoInvalidoException("La cantidad total del producto granel excede el límite permitido.");
+            }
+        } else if ("l".equals(movimientoGranel.getProductoGranel().getUnidad())) {
+            if (cantidadTotal > LIMITE_MAX_LT) {
+                throw new MovimientoInvalidoException("La cantidad total del producto granel excede el límite permitido.");
+            }
+        }
+
+        // actualizar el inventario
+        ProductoGranel producto = movimientoGranel.getProductoGranel();
+        if (ProductosGranel.productosGranel.contains(producto)) {
+            ProductoGranel productoExistente = ProductosGranel.productosGranel.get(ProductosGranel.productosGranel.indexOf(producto));
+            productoExistente.setCantidad(productoExistente.getCantidad() + movimientoGranel.getProductoGranel().getCantidad());
+        } else {
+            producto.setCantidad(movimientoGranel.getProductoGranel().getCantidad());
+            ProductosGranel.productosGranel.add(producto);
+        }
+
+        // agregar el movimiento a la lista de compras
+        movimientoGranel.setStatus(false);
+        compras.add(movimientoGranel);
     }
     
     public void agregarVentaGranel (MovimientoGranel movimientoGranel) throws MovimientoInvalidoException {
@@ -60,28 +90,29 @@ public class MovimientosGranel {
             throw new MovimientoInvalidoException("La fecha del movimiento debe estar dentro del mes actual y no después de la fecha actual.");
         }
         
-        ventas.add(movimientoGranel); // y se supone que tambien se elimina a productosGranel (el inventario)
+        ventas.add(movimientoGranel); 
     }
     
-    public List<MovimientoGranel> consultarMovimientosPorFecha (LocalDate fecha) {
-        List<MovimientoGranel> movimientosPorFecha = new ArrayList<>();
-        for (MovimientoGranel movimientoGranel : compras) {
-            if (movimientoGranel.getFecha().equals(fecha)) {
-                movimientosPorFecha.add(movimientoGranel);
-            }
-            
-        }
-        return movimientosPorFecha;
-    }
-    
-    public List<MovimientoGranel> consultarMovimientosPorProducto(String clave) {
-        List<MovimientoGranel> movimientosPorProducto = new ArrayList<>();
-        for (MovimientoGranel movimientoGranel : compras) {
-            if (movimientoGranel.getProductoGranel().getClave().equals(clave)) {
-                movimientosPorProducto.add(movimientoGranel);
-            }
-        }
-        return movimientosPorProducto;
-    }
+    // estos metodos están mal
+//    public List<MovimientoGranel> consultarMovimientosPorFecha (LocalDate fecha) {
+//        List<MovimientoGranel> movimientosPorFecha = new ArrayList<>();
+//        for (MovimientoGranel movimientoGranel : compras) {
+//            if (movimientoGranel.getFecha().equals(fecha)) {
+//                movimientosPorFecha.add(movimientoGranel);
+//            }
+//            
+//        }
+//        return movimientosPorFecha;
+//    }
+//    
+//    public List<MovimientoGranel> consultarMovimientosPorProducto(String clave) {
+//        List<MovimientoGranel> movimientosPorProducto = new ArrayList<>();
+//        for (MovimientoGranel movimientoGranel : compras) {
+//            if (movimientoGranel.getProductoGranel().getClave().equals(clave)) {
+//                movimientosPorProducto.add(movimientoGranel);
+//            }
+//        }
+//        return movimientosPorProducto;
+//    }
     
 }
