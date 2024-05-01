@@ -138,26 +138,35 @@ public class MovimientosGranel {
         movimientoGranel.setStatus(false);
         ventas.add(movimientoGranel);
     }
-    // estos metodos están mal
-//    public List<MovimientoGranel> consultarMovimientosPorFecha (LocalDate fecha) {
-//        List<MovimientoGranel> movimientosPorFecha = new ArrayList<>();
-//        for (MovimientoGranel movimientoGranel : compras) {
-//            if (movimientoGranel.getFecha().equals(fecha)) {
-//                movimientosPorFecha.add(movimientoGranel);
-//            }
-//            
-//        }
-//        return movimientosPorFecha;
-//    }
-//    
-//    public List<MovimientoGranel> consultarMovimientosPorProducto(String clave) {
-//        List<MovimientoGranel> movimientosPorProducto = new ArrayList<>();
-//        for (MovimientoGranel movimientoGranel : compras) {
-//            if (movimientoGranel.getProductoGranel().getClave().equals(clave)) {
-//                movimientosPorProducto.add(movimientoGranel);
-//            }
-//        }
-//        return movimientosPorProducto;
-//    }
+
+    public List<MovimientoGranel> consultarRegistroCompras() {
+        return compras;
+    }
+    
+    public List<MovimientoGranel> consultarRegistroVentas() {
+        return ventas;
+    }
+    
+    public List<MovimientoGranel> consultarComprasPorPeriodo(Fecha fechaInicio, Fecha fechaFin) {
+        List<MovimientoGranel> comprasPorPeriodo = new ArrayList<>();
+        for (MovimientoGranel movimientoGranel : compras) {
+            Fecha fechaMovimiento = movimientoGranel.getFecha();
+            if (fechaMovimiento.after(fechaInicio) && fechaMovimiento.before(fechaFin)) {
+                comprasPorPeriodo.add(movimientoGranel);
+            }
+        }
+        return comprasPorPeriodo;
+    }
+    
+    public List<MovimientoGranel> consultarVentasPorPeriodo(Fecha fechaInicio, Fecha fechaFin) {
+        List<MovimientoGranel> ventasPorPeriodo = new ArrayList<>();
+        for (MovimientoGranel movimientoGranel : ventas) {
+            Fecha fechaMovimiento = movimientoGranel.getFecha();
+            if (fechaMovimiento.after(fechaInicio) && fechaMovimiento.before(fechaFin)) {
+                ventasPorPeriodo.add(movimientoGranel);
+            }
+        }
+        return ventasPorPeriodo;
+    }
     
 }
