@@ -93,6 +93,51 @@ public class MovimientosGranel {
         ventas.add(movimientoGranel); 
     }
     
+    public void agregarVentasGranel (MovimientoGranel movimientoGranel) throws MovimientoInvalidoException {
+        // verificar que el producto esté en el inventario
+        if (!ProductosGranel.productosGranel.contains(movimientoGranel.getProductoGranel())) {
+            throw new MovimientoInvalidoException("El producto no se encuentra en el catálogo.");
+        }
+        // verificar la fecha del registro
+        if (movimientoGranel.getFecha().getAnio() != LocalDate.now().getYear() || movimientoGranel.getFecha().getMes() != LocalDate.now().getMonthValue() || movimientoGranel.getFecha().after(LocalDate.now())) {
+            throw new MovimientoInvalidoException("La fecha del movimiento debe estar dentro del mes actual y no después de la fecha actual.");
+        }
+        // verificar que no haya otro movimiento de ese producto ese día 
+        for (MovimientoGranel movimiento : ventas) {
+            if (movimiento.getProductoGranel().equals(movimientoGranel.getProductoGranel()) && movimiento.getFecha().equals(movimientoGranel.getFecha())) {
+                throw new MovimientoInvalidoException("Ya hay un movimiento de ese producto en la fecha especificada.");
+            }
+        }
+        // verificar que al vender el producto granel la cantidad total no sobrepase de 1500 o 3000
+        int cantidadTotal = 0;
+        for (MovimientoGranel movimiento : ventas) {
+            if (movimiento.getProductoGranel().equals(movimientoGranel.getProductoGranel())) {
+                cantidadTotal += movimiento.getProductoGranel().getCantidad();
+            }
+        }
+        cantidadTotal += movimientoGranel.getProductoGranel().getCantidad();
+        if ("kg".equals(movimientoGranel.getProductoGranel().getUnidad())) {
+            if (cantidadTotal > LIMITE_MAX_KG) {
+                throw new MovimientoInvalidoException("La cantidad total del producto granel excede lo existente en el inventario.");
+            }
+        } else if ("l".equals(movimientoGranel.getProductoGranel().getUnidad())) {
+            if (cantidadTotal > LIMITE_MAX_LT) {
+                throw new MovimientoInvalidoException("La cantidad total del producto granel excede lo existente en el inventario.");
+            }
+        }
+        // actualizar el inventario
+        ProductoGranel producto = movimientoGranel.getProductoGranel();
+        if (ProductosGranel.productosGranel.contains(producto)) {
+            ProductoGranel productoExistente = ProductosGranel.productosGranel.get(ProductosGranel.productosGranel.indexOf(producto));
+            productoExistente.setCantidad(productoExistente.getCantidad() + movimientoGranel.getProductoGranel().getCantidad());
+        } else {
+            producto.setCantidad(movimientoGranel.getProductoGranel().getCantidad());
+            ProductosGranel.productosGranel.add(producto);
+        }
+        // agregar el movimiento a la lista de compras
+        movimientoGranel.setStatus(false);
+        ventas.add(movimientoGranel);
+    }
     // estos metodos están mal
 //    public List<MovimientoGranel> consultarMovimientosPorFecha (LocalDate fecha) {
 //        List<MovimientoGranel> movimientosPorFecha = new ArrayList<>();
