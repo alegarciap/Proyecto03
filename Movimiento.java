@@ -3,10 +3,10 @@ import objetosServicio.*;
 import java.util.Objects;
 
 /**
- * La clase Movimiento contiene los atributos y métodos comunes a un movimiento (una compra o venta) de un producto empacado o un producto a granel. 
+ * La clase Movimiento contiene los atributos y mÃ©todos comunes a un movimiento (una compra o venta) de un producto empacado o un producto a granel. 
  * El atributo procesado indica si el movimiento ya fue procesado, modificando el inventario.
  * 
- * @author Alejandra García Preciado
+ * @author Alejandra GarcÃ­a Preciado
  */
 public class Movimiento {
     
@@ -49,7 +49,7 @@ public class Movimiento {
         this.status = false;
     }
     
-    // Métodos de acceso
+    // MÃ©todos de acceso
     /**
      * Obtiene la clave del movimiento.
      * 
@@ -104,7 +104,7 @@ public class Movimiento {
         this.status = status;
     }
     
-    // Método equals
+    // MÃ©todo equals
     /**
      * Compara este Movimiento con otro objeto para determinar si son iguales.
      * 
@@ -114,8 +114,8 @@ public class Movimiento {
     @Override
     public boolean equals(Object objeto){
         /*
-        El método equals en Java se utiliza para comparar si dos objetos son iguales en cuanto a su contenido, no en referencia. 
-        Este método está definido en la clase Object.
+        El mÃ©todo equals en Java se utiliza para comparar si dos objetos son iguales en cuanto a su contenido, no en referencia. 
+        Este mÃ©todo estÃ¡ definido en la clase Object.
         */
         // Comprobar si los objetos son la misma instancia
         if (this == objeto) return true;
@@ -130,7 +130,7 @@ public class Movimiento {
         return Objects.equals(claveMov, movimiento.claveMov);
     }
     
-    // Método hashcode
+    // MÃ©todo hashcode
     /**
      * Calcula el valor hash de este Movimiento.
      * 
@@ -139,15 +139,15 @@ public class Movimiento {
     @Override
     public int hashCode(){
         /*
-        El método hashCode en Java se utiliza para calcular un valor numérico que representa de forma única un objeto. 
-        La implementación de hashCode debería garantizar que dos objetos que son iguales según el método equals devuelvan el mismo valor de hashCode. 
+        El mÃ©todo hashCode en Java se utiliza para calcular un valor numÃ©rico que representa de forma Ãºnica un objeto. 
+        La implementaciÃ³n de hashCode deberÃ­a garantizar que dos objetos que son iguales segÃºn el mÃ©todo equals devuelvan el mismo valor de hashCode. 
         */
         return Objects.hash(claveMov);
     }
     
-    // Método toString
+    // MÃ©todo toString
     /**
-         * Devuelve una representación en forma de cadena de este Movimiento.
+         * Devuelve una representaciÃ³n en forma de cadena de este Movimiento.
      * 
      * @return Una cadena que contiene los valores de los atributos del Movimiento.
      */
