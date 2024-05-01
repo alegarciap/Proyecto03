@@ -1,6 +1,5 @@
 package abarrotesPersistencia;
 
-import excepciones.InventarioInvalidoException;
 import excepciones.ProductoExistenteException;
 import excepciones.ProductoInvalidoException;
 import excepciones.ProductoNoEncontradoException;
@@ -14,7 +13,9 @@ import objetosNegocio.ProductoGranel;
  */
 public class ProductosGranel {
     
-    private List<ProductoGranel> productosGranel; // inventario
+    public static List<ProductoGranel> productosGranel; // catálogo productos granel
+    
+    // metodo para serializar la informacion
     
     public ProductosGranel() {
         this.productosGranel = new ArrayList<>();
@@ -53,19 +54,15 @@ public class ProductosGranel {
         throw new ProductoNoEncontradoException("El producto granel no existe");
     }
     
-    public void actualizarInventario(ProductoGranel productoGranel, double existencia) throws ProductoNoEncontradoException, InventarioInvalidoException {
-        int indiceProducto = productosGranel.indexOf(productoGranel);
-        if (indiceProducto < 0) {
-            throw new ProductoNoEncontradoException("El producto granel no existe.");
-        }
-        
-        if (existencia < 0) {
-            throw new InventarioInvalidoException("La cantidad a agregar no puede ser negativa.");
-        }
-        
-        ProductoGranel productoGranelActualizado = new ProductoGranel(productoGranel.getClave(), productoGranel.getNombre(), productoGranel.getTipo(), productoGranel.getUnidad(), productoGranel.getCantidad(), productoGranel.getExistencia() + existencia);
-        productosGranel.set(indiceProducto, productoGranelActualizado);
-    }
+//    public void actualizarInventario(ProductoGranel productoGranel, float cantidad) throws ProductoNoEncontradoException, InventarioInvalidoException {
+//        int indiceProducto = productosGranel.indexOf(productoGranel);
+//        if (indiceProducto < 0) {
+//            throw new ProductoNoEncontradoException("El producto granel no existe.");
+//        }
+//        
+//        ProductoGranel productoGranelActualizado = new ProductoGranel(productoGranel.getClave(), productoGranel.getNombre(), productoGranel.getTipo(), productoGranel.getUnidad(), productoGranel.getCantidad() + cantidad);
+//        productosGranel.set(indiceProducto, productoGranelActualizado);
+//    }
     
     public void eliminarProductoGranel(String clave) throws ProductoNoEncontradoException {
         for (ProductoGranel productoGranel : productosGranel) {
