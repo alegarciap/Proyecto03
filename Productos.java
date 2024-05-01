@@ -9,11 +9,11 @@ import objetosNegocio.Producto;
 
 /**
  *
- * @author alega prueba
+ * @author alega
  */
 public class Productos {
     
-    private List<Producto> productos;
+    public List<Producto> productos; // catálogo
     
     public Productos() {
         this.productos = new ArrayList<>();
@@ -53,15 +53,34 @@ public class Productos {
         throw new ProductoNoEncontradoException("El producto no existe.");
     }
     
-    public void actualizarProducto(Producto producto) throws ProductoNoEncontradoException, ProductoInvalidoException {
+    public void actualizarProducto(Producto producto) throws ProductoNoEncontradoException, ProductoInvalidoException, ProductoExistenteException {
         if (!productos.contains(producto)) {
             throw new ProductoNoEncontradoException("El producto no existe.");
         }
-        
-        // Aquí falta la parte de verificar que el producto cumpla con las condiciones
+
+        if (productos.contains(producto)) {
+            throw new ProductoExistenteException("El producto ya existe.");
+        }
+
+        if (!producto.getClave().matches("[A-Z]{2}[0-9]{3}")) {
+            throw new ProductoInvalidoException("La clave del producto no es válida.");
+        }
+
+        if (producto.getNombre() == null || producto.getTipo() == null || producto.getUnidad() == null) {
+            throw new ProductoInvalidoException("El producto debe tener nombre, tipo y unidad.");
+        }
+
+        if (!producto.getUnidad().equals("kg") && !producto.getUnidad().equals("l")) {
+            throw new ProductoInvalidoException("La unidad del producto debe ser kg o l");
+        }
+
+        if (!producto.getTipo().equals("E") && !producto.getTipo().equals("G")) {
+            throw new ProductoInvalidoException("El tipo del producto debe ser E o G.");
+        }
+
         productos.set(productos.indexOf(producto), producto);
     }
-    
+
     public void eliminarProducto(String clave) throws ProductoNoEncontradoException {
         for (Producto producto : productos) {
             if (producto.getClave().equals(clave)) {
