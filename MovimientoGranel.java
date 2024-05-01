@@ -3,7 +3,7 @@ package objetosNegocio;
 /**
  * Clase que representa un movimiento de un producto a granel (comprado o vendido).
  * 
- * @author Alejandra García Preciado
+ * @author Alejandra GarcÃ­a Preciado
  */
 public class MovimientoGranel extends Movimiento {
     
@@ -37,7 +37,7 @@ public class MovimientoGranel extends Movimiento {
         this.tipoMov = null;
     }
     
-    // Métodos de acceso
+    // MÃ©todos de acceso
     
     public Movimiento getTipoMov() {
         return tipoMov;
@@ -65,11 +65,11 @@ public class MovimientoGranel extends Movimiento {
         this.productoGranel = productoGranel;
     }
     
-    // Método toString
+    // MÃ©todo toString
     /**
-     * Devuelve una representación en forma de cadena de este MovimientoGranel.
+     * Devuelve una representaciÃ³n en forma de cadena de este MovimientoGranel.
      * 
-     * @return Una cadena que contiene la representación en cadena del producto a granel asociado.
+     * @return Una cadena que contiene la representaciÃ³n en cadena del producto a granel asociado.
      */
     @Override
     public String toString(){
