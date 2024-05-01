@@ -4,7 +4,7 @@ import java.util.Objects;
 /**
  * La clase Producto representa un producto comercializado en la abarrotera.
  * 
- * @author Alejandra García Preciado
+ * @author Alejandra GarcÃ­a Preciado
  */
 public class Producto {
     
@@ -25,7 +25,7 @@ public class Producto {
     /**
      * Constructor por defecto que inicializa los atributos con valores predeterminados.
      */
-    public Producto(){  // Constructor por ausencia o por defecto, se asignan cadenas vacías a los atributos
+    public Producto(){  // Constructor por ausencia o por defecto, se asignan cadenas vacÃ­as a los atributos
         this.clave = "";
         this.nombre = "";
         this.tipo = "";
@@ -47,7 +47,7 @@ public class Producto {
     }
     
     /**
-     * Constructor que inicializa la clave del producto y los demás atributos en null o ''.
+     * Constructor que inicializa la clave del producto y los demÃ¡s atributos en null o ''.
      * 
      * @param clave La clave del producto.
      */
@@ -69,7 +69,7 @@ public class Producto {
         this.unidad = copiaProducto.unidad;
     }
     
-    // Métodos de acceso
+    // MÃ©todos de acceso
     /**
      * Obtiene la clave del producto.
      * 
@@ -142,7 +142,7 @@ public class Producto {
         this.unidad = unidad;
     }
     
-    // Método equals
+    // MÃ©todo equals
     /**
      * Compara este Producto con otro objeto para determinar si son iguales.
      * 
@@ -152,40 +152,40 @@ public class Producto {
     @Override
     public boolean equals(Object objeto){
         /*
-        El método equals en Java se utiliza para comparar si dos objetos son iguales en cuanto a su contenido, no en referencia. 
-        Este método está definido en la clase Object.
+        El mÃ©todo equals en Java se utiliza para comparar si dos objetos son iguales en cuanto a su contenido, no en referencia. 
+        Este mÃ©todo estÃ¡ definido en la clase Object.
         */
         
         /*
-        Esta línea comprueba si el objeto que está llamando al método (this) es igual al objeto pasado como argumento. 
-        Si son la misma instancia (es decir, si apuntan a la misma ubicación en la memoria), el método devuelve true.
+        Esta lÃ­nea comprueba si el objeto que estÃ¡ llamando al mÃ©todo (this) es igual al objeto pasado como argumento. 
+        Si son la misma instancia (es decir, si apuntan a la misma ubicaciÃ³n en la memoria), el mÃ©todo devuelve true.
         */
         if (this == objeto) return true;
         
         
         /*
-        Esta línea comprueba si el objeto pasado es null o si no es de la misma clase que la clase actual (Producto). 
-        Si alguna de estas condiciones se cumple, el método devuelve false, ya que dos objetos de diferentes clases nunca pueden ser iguales.
+        Esta lÃ­nea comprueba si el objeto pasado es null o si no es de la misma clase que la clase actual (Producto). 
+        Si alguna de estas condiciones se cumple, el mÃ©todo devuelve false, ya que dos objetos de diferentes clases nunca pueden ser iguales.
         */
         if (objeto == null || getClass() != objeto.getClass()) return false;
         
         
         /*
-        Aquí convertimos el objeto pasado como argumento (objeto) en un objeto de tipo Producto. 
-        Esto se hace mediante un casting explícito.
+        AquÃ­ convertimos el objeto pasado como argumento (objeto) en un objeto de tipo Producto. 
+        Esto se hace mediante un casting explÃ­cito.
         */
         Producto producto = (Producto) objeto;
         
         
         /*
-        Finalmente, esta línea compara los atributos relevantes de los dos objetos para determinar si son iguales. 
+        Finalmente, esta lÃ­nea compara los atributos relevantes de los dos objetos para determinar si son iguales. 
         En este caso, se compara el atributo clave de la clase Producto. 
-        Se utiliza el método Objects.equals para comparar estos atributos de manera segura, evitando errores si alguno de los atributos es null.
+        Se utiliza el mÃ©todo Objects.equals para comparar estos atributos de manera segura, evitando errores si alguno de los atributos es null.
         */
         return Objects.equals(clave, producto.clave);
     }
     
-    // Método hashcode
+    // MÃ©todo hashcode
     /**
      * Calcula el valor hash de este Producto.
      * 
@@ -194,15 +194,15 @@ public class Producto {
     @Override
     public int hashCode(){
         /*
-        El método hashCode en Java se utiliza para calcular un valor numérico que representa de forma única un objeto. 
-        La implementación de hashCode debería garantizar que dos objetos que son iguales según el método equals devuelvan el mismo valor de hashCode. 
+        El mÃ©todo hashCode en Java se utiliza para calcular un valor numÃ©rico que representa de forma Ãºnica un objeto. 
+        La implementaciÃ³n de hashCode deberÃ­a garantizar que dos objetos que son iguales segÃºn el mÃ©todo equals devuelvan el mismo valor de hashCode. 
         */
         return Objects.hash(clave);
     }
     
-    // Método toString
+    // MÃ©todo toString
     /**
-     * Devuelve una representación en forma de cadena de este Producto.
+     * Devuelve una representaciÃ³n en forma de cadena de este Producto.
      * 
      * @return Una cadena que contiene los valores de los atributos del Producto.
      */
