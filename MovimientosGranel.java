@@ -82,17 +82,7 @@ public class MovimientosGranel {
         movimientoGranel.setStatus(false);
         compras.add(movimientoGranel);
     }
-    
-    public void agregarVentaGranel (MovimientoGranel movimientoGranel) throws MovimientoInvalidoException {
-        // Aquí falta la parte de verificar que el movimiento cumpla con las condiciones
-        
-        if (movimientoGranel.getFecha().getAnio() != LocalDate.now().getYear() || movimientoGranel.getFecha().getMes() != LocalDate.now().getMonthValue() || movimientoGranel.getFecha().after(LocalDate.now())) {
-            throw new MovimientoInvalidoException("La fecha del movimiento debe estar dentro del mes actual y no después de la fecha actual.");
-        }
-        
-        ventas.add(movimientoGranel); 
-    }
-    
+
     public void agregarVentasGranel (MovimientoGranel movimientoGranel) throws MovimientoInvalidoException {
         // verificar que el producto esté en el inventario
         if (!ProductosGranel.productosGranel.contains(movimientoGranel.getProductoGranel())) {
