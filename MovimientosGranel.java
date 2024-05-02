@@ -108,32 +108,29 @@ public class MovimientosGranel {
                 throw new MovimientoInvalidoException("Ya hay un movimiento de ese producto en la fecha especificada.");
             }
         }
-        // verificar que al vender el producto granel la cantidad total no sobrepase de 1500 o 3000
+        // verificar que al vender el producto no quede menos del límite mínimo
         int cantidadTotal = 0;
         for (MovimientoGranel movimiento : ventas) {
-            if (movimiento.getProductoGranel().equals(movimientoGranel.getProductoGranel())) {
-                cantidadTotal += movimiento.getProductoGranel().getCantidad();
-            }
-        }
-        cantidadTotal += movimientoGranel.getProductoGranel().getCantidad();
         if ("kg".equals(movimientoGranel.getProductoGranel().getUnidad())) {
-            if (cantidadTotal > LIMITE_MAX_KG) {
-                throw new MovimientoInvalidoException("La cantidad total del producto granel excede lo existente en el inventario.");
+            if ( (movimientoGranel.getProductoGranel.getCantidad - movimiento.getProductoGranel.getCantidad)> LIMITE_MIN_KG) {
+                throw new MovimientoInvalidoException("Cantidad insuficiente para el inventario.");
             }
         } else if ("l".equals(movimientoGranel.getProductoGranel().getUnidad())) {
-            if (cantidadTotal > LIMITE_MAX_LT) {
-                throw new MovimientoInvalidoException("La cantidad total del producto granel excede lo existente en el inventario.");
+            if (movimientoGranel.getProductoGranel.getCantidad - movimiento.getProductoGranel.getCantidad > LIMITE_MIN_LT) {
+                throw new MovimientoInvalidoException("Cantidad insuficiente para el inventario.");
             }
         }
+
         // actualizar el inventario
         ProductoGranel producto = movimientoGranel.getProductoGranel();
         if (ProductosGranel.productosGranel.contains(producto)) {
             ProductoGranel productoExistente = ProductosGranel.productosGranel.get(ProductosGranel.productosGranel.indexOf(producto));
-            productoExistente.setCantidad(productoExistente.getCantidad() + movimientoGranel.getProductoGranel().getCantidad());
+            productoExistente.setCantidad(productoExistente.getCantidad()- movimientoGranel.getProductoGranel().getCantidad());
         } else {
             producto.setCantidad(movimientoGranel.getProductoGranel().getCantidad());
             ProductosGranel.productosGranel.add(producto);
         }
+
         // agregar el movimiento a la lista de compras
         movimientoGranel.setStatus(false);
         ventas.add(movimientoGranel);
