@@ -28,6 +28,16 @@ public class Movimiento {
      * Indica si el movimiento ha sido procesado o no.
      */
     private boolean status;
+    
+    /**
+     * La cantidad del movimiento.
+     */
+    private float cantidad;
+    
+    /**
+     * La clave del producto relacionado al movimiento.
+     */
+    private String claveProducto;
 
     // Constructores
     /**
@@ -35,9 +45,10 @@ public class Movimiento {
      * predeterminados.
      */
     public Movimiento() {
-        this.claveMov = "";
-        this.fecha = null;
-        this.status = false;
+        this.claveMov = claveMov;
+        this.fecha = fecha;
+        this.status = status;
+        this.claveProducto = claveProducto;
     }
 
     /**
@@ -47,10 +58,11 @@ public class Movimiento {
      * @param fecha La fecha del movimiento.
      * @param status Indica si el movimiento ha sido procesado o no.
      */
-    public Movimiento(String claveMov, Fecha fecha, boolean status) {
+    public Movimiento(String claveMov, Fecha fecha, boolean status, String claveProducto) {
         this.claveMov = claveMov;
         this.fecha = fecha;
         this.status = status;
+        this.claveProducto = claveProducto;
     }
 
     /**
@@ -119,6 +131,42 @@ public class Movimiento {
     public void setStatus(boolean status) {
         this.status = status;
     }
+    
+    /**
+     * Obtiene la cantidad del movimiento.
+     *
+     * @return La cantidad del movimiento.
+     */
+    public float getCantidad() {
+        return cantidad;
+    }
+    
+    /**
+     * Establece la cantidad del movimiento.
+     *
+     * @param cantidad La nueva cantidad del movimiento.
+     */
+    public void setCantidad(float cantidad) {
+        this.cantidad = cantidad;
+    }
+    
+    /**
+     * Obtiene la clave del movimiento.
+     *
+     * @return La clave del movimiento.
+     */
+    public String getClaveProducto() {
+        return claveProducto;
+    }
+    
+    /**
+     * Establece la clave del producto.
+     *
+     * @param claveProducto La nueva clave del producto.
+     */
+    public void setClaveProducto(String claveProducto) {
+        this.claveProducto = claveProducto;
+    }
 
     // Método equals
     /**
@@ -166,7 +214,7 @@ public class Movimiento {
      */
     @Override
     public String toString() {
-        return claveMov + "," + fecha + "," + status;
+        return claveMov + "," + fecha + "," + status + "," + claveProducto;
     }
 
 }
