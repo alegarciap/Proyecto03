@@ -26,7 +26,7 @@ public class ProductosGranel {
     /**
      * Lista que almacena los productos a granel.
      */
-    public static List<ProductoGranel> productosGranel;
+    public static List<ProductoGranel> productosGranel; // "inventario" 
 
     /**
      * Nombre del archivo en el que se guardarán los productos a granel.
@@ -39,33 +39,33 @@ public class ProductosGranel {
      */
     public ProductosGranel() {
         ProductosGranel.productosGranel = new ArrayList<>();
-        cargarProductos(); // cargar productos al iniciar la instancia
+        // cargarProductos(); // cargar productos al iniciar la instancia
     }
 
     /**
      * Guarda los productos a granel en el archivo.
      */
-    private void guardarProductos() { // guarda los productos en el archivo
-        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(archivo))) { // se crea un ObjectOutputStream para escribir en el archivo productos.dat
-            salida.writeObject(productosGranel); // se escribe la lista de productos en el archivo
-        } catch (IOException ex) {
-            ex.printStackTrace(); // si ocurre alguna excepción durante la escritura, se imprime el error
-        }
-    }
+//    private void guardarProductos() { // guarda los productos en el archivo
+//        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(archivo))) { // se crea un ObjectOutputStream para escribir en el archivo productos.dat
+//            salida.writeObject(productosGranel); // se escribe la lista de productos en el archivo
+//        } catch (IOException ex) {
+//            ex.printStackTrace(); // si ocurre alguna excepción durante la escritura, se imprime el error
+//        }
+//    }
 
     /**
      * Carga los productos a granel desde el archivo.
      */
-    private void cargarProductos() { // carga los productos desde el archivo
-        File archivoProductos = new File(archivo); // se crea un objeto File con el nombre del archivo de persistencia
-        if (archivoProductos.exists()) {
-            try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(archivo))) { // se crea un ObjectInputStream para leer desde el archivo productos.dat
-                productosGranel = (List<ProductoGranel>) entrada.readObject(); // se lee la lista de productos desde el archivo y se asigna a la variable productos
-            } catch (IOException | ClassNotFoundException ex) {
-                ex.printStackTrace(); // si ocurre alguna excepción durante la lectura, se imprime el error
-            }
-        }
-    }
+//    private void cargarProductos() { // carga los productos desde el archivo
+//        File archivoProductos = new File(archivo); // se crea un objeto File con el nombre del archivo de persistencia
+//        if (archivoProductos.exists()) {
+//            try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(archivo))) { // se crea un ObjectInputStream para leer desde el archivo productos.dat
+//                productosGranel = (List<ProductoGranel>) entrada.readObject(); // se lee la lista de productos desde el archivo y se asigna a la variable productos
+//            } catch (IOException | ClassNotFoundException ex) {
+//                ex.printStackTrace(); // si ocurre alguna excepción durante la lectura, se imprime el error
+//            }
+//        }
+//    }
 
     /**
      * Agrega un nuevo producto a granel al catálogo.
@@ -75,7 +75,7 @@ public class ProductosGranel {
      * @throws ProductoExistenteException Si el producto ya existe en el
      * catálogo.
      */
-    public void agregarProductoGranel(ProductoGranel productoGranel) throws ProductoExistenteException, ProductoInvalidoException {
+    public static void agregarProductoGranel(ProductoGranel productoGranel) throws ProductoExistenteException, ProductoInvalidoException {
         if (productosGranel.contains(productoGranel)) {
             throw new ProductoExistenteException("El producto ya existe.");
         }
@@ -88,18 +88,19 @@ public class ProductosGranel {
             throw new ProductoInvalidoException("El producto debe tener nombre, tipo y unidad.");
         }
 
-        if (!productoGranel.getUnidad().equals("kg") && !productoGranel.getUnidad().equals("l")) {
+        if (!productoGranel.getUnidad().equalsIgnoreCase("kg") && !productoGranel.getUnidad().equals("l")) {
             throw new ProductoInvalidoException("La unidad del producto debe ser kg o l");
         }
 
-        if (!productoGranel.getTipo().equals("E") && !productoGranel.getTipo().equals("G")) {
-            throw new ProductoInvalidoException("El tipo del producto debe ser E o G.");
+        if (!productoGranel.getTipo().equals("G")) {
+            throw new ProductoInvalidoException("El tipo del producto debe ser G.");
         }
 
         productosGranel.add(productoGranel);
-        guardarProductos();
+        // guardarProductos();
     }
 
+    
     /**
      * Consulta un producto a granel por su clave.
      *
@@ -108,7 +109,7 @@ public class ProductosGranel {
      * @throws ProductoNoEncontradoException Si el producto a granel no existe
      * en el catálogo.
      */
-    public ProductoGranel consultarProductoGranel(String clave) throws ProductoNoEncontradoException {
+    public static ProductoGranel consultarProductoGranelPorClave(String clave) throws ProductoNoEncontradoException {
         for (ProductoGranel productoGranel : productosGranel) {
             if (productoGranel.getClave().equals(clave)) {
                 return productoGranel;
@@ -128,7 +129,7 @@ public class ProductosGranel {
         for (ProductoGranel productoGranel : productosGranel) {
             if (productoGranel.getClave().equals(clave)) {
                 productosGranel.remove(productoGranel);
-                guardarProductos();
+                // guardarProductos();
                 return;
             }
         }
