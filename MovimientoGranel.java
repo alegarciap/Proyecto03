@@ -1,5 +1,7 @@
 package objetosNegocio;
 
+import objetosServicio.Fecha;
+
 /**
  * Clase que representa un movimiento de un producto a granel (comprado o
  * vendido). Hereda de la clase Movimiento.
@@ -12,38 +14,34 @@ public class MovimientoGranel extends Movimiento {
     /**
      * El tipo de movimiento (compra o venta).
      */
-    private Movimiento tipoMov;
-
-    /**
-     * El producto a granel asociado al movimiento.
-     */
-    private ProductoGranel productoGranel;
-
+    private int tipoMov; // 0 si es compra, 1 si es venta
+    
+    
+    private float cantidad;
+    
     // Constructores
+
     /**
-     * Constructor por defecto que inicializa el producto a granel en null.
+     * Constructor por defecto que inicializa los atributos con valores
+     * predeterminados.
      */
     public MovimientoGranel() {
-        this.productoGranel = null;
+        this.tipoMov = tipoMov;
+        this.cantidad = 0.0f;
     }
-
+    
     /**
-     * Constructor que inicializa el movimiento con un producto a granel dado.
-     *
-     * @param productoGranel El producto a granel asociado al movimiento.
-     */
-    public MovimientoGranel(ProductoGranel productoGranel) {
-        this.productoGranel = productoGranel;
-    }
-
-    /**
-     * Constructor que inicializa el movimiento con una clave de movimiento.
+     * Constructor que inicializa el movimiento con los valores dados.
      *
      * @param claveMov La clave del movimiento.
+     * @param fecha La fecha del movimiento.
+     * @param status El status del movimiento.
+     * @param claveProducto La clave del producto.
      */
-    public MovimientoGranel(String claveMov) {
-        super(claveMov);
-        this.tipoMov = null;
+    public MovimientoGranel(String claveMov, Fecha fecha, boolean status, String claveProducto) {
+        super(claveProducto, fecha, status, claveProducto);
+        this.tipoMov = tipoMov;
+        this.cantidad = cantidad;
     }
 
     // Métodos de acceso
@@ -52,7 +50,7 @@ public class MovimientoGranel extends Movimiento {
      *
      * @return El tipo de movimiento asociado al movimiento de granel.
      */
-    public Movimiento getTipoMov() {
+    public int getTipoMov() {
         return tipoMov;
     }
 
@@ -62,26 +60,28 @@ public class MovimientoGranel extends Movimiento {
      * @param tipoMov El nuevo tipo de movimiento asociado al movimiento de
      * granel.
      */
-    public void setTipoMov(Movimiento tipoMov) {
+    public void setTipoMov(int tipoMov) {
         this.tipoMov = tipoMov;
     }
-
+    
     /**
-     * Obtiene el producto a granel asociado al movimiento.
+     * Obtiene la cantidad del movimiento granel.
      *
-     * @return El producto a granel asociado al movimiento.
+     * @return La cantidad del movimiento.
      */
-    public ProductoGranel getProductoGranel() {
-        return productoGranel;
+    @Override
+    public float getCantidad() {
+        return cantidad;
     }
-
+    
     /**
-     * Establece el producto a granel asociado al movimiento.
+     * Establece la cantidad del movimiento.
      *
-     * @param productoGranel El nuevo producto a granel asociado al movimiento.
+     * @param cantidad La nueva cantidad del movimiento granel.
      */
-    public void setProductoGranel(ProductoGranel productoGranel) {
-        this.productoGranel = productoGranel;
+    @Override
+    public void setCantidad(float cantidad) {
+        this.cantidad = cantidad;
     }
 
     // Método toString
@@ -93,7 +93,7 @@ public class MovimientoGranel extends Movimiento {
      */
     @Override
     public String toString() {
-        return productoGranel.toString();
+        return tipoMov + super.toString() + "," + cantidad + ",";
     }
 
 }
