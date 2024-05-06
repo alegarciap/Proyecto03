@@ -1,6 +1,9 @@
 package abarrotesPersistencia;
 
 import excepciones.MovimientoInvalidoException;
+import excepciones.ProductoExistenteException;
+import excepciones.ProductoInvalidoException;
+import excepciones.ProductoNoEncontradoException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import objetosNegocio.MovimientoGranel;
+import objetosNegocio.Producto;
 import objetosNegocio.ProductoGranel;
 import objetosServicio.Fecha;
 
@@ -28,12 +32,12 @@ public class MovimientosGranel {
     /**
      * Lista que almacena los movimientos de compras de productos a granel.
      */
-    private List<MovimientoGranel> compras;
+    public static List<MovimientoGranel> compras;
 
     /**
      * Lista que almacena los movimientos de ventas de productos a granel.
      */
-    private List<MovimientoGranel> ventas;
+    public static List<MovimientoGranel> ventas;
 
     /**
      * Límite mínimo de cantidad de productos a granel en kilogramos para
@@ -79,8 +83,8 @@ public class MovimientosGranel {
     public MovimientosGranel() {
         this.compras = new ArrayList<>();
         this.ventas = new ArrayList<>();
-        this.compras = cargarMovimientos(archivoCompras);
-        this.ventas = cargarMovimientos(archivoVentas);
+        // this.compras = cargarMovimientos(archivoCompras);
+        // this.ventas = cargarMovimientos(archivoVentas);
     }
 
     /**
@@ -91,13 +95,13 @@ public class MovimientosGranel {
      * @param archivo El nombre del archivo en el que se guardarán los
      * movimientos.
      */
-    private void guardarMovimientos(List<MovimientoGranel> movimientos, String archivo) {
-        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(archivo))) {
-            salida.writeObject(movimientos);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+//    private void guardarMovimientos(List<MovimientoGranel> movimientos, String archivo) {
+//        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(archivo))) {
+//            salida.writeObject(movimientos);
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 
     /**
      * Carga los movimientos de compras o ventas de productos a granel desde un
@@ -106,18 +110,18 @@ public class MovimientosGranel {
      * @param archivo El nombre del archivo del que se cargarán los movimientos.
      * @return La lista de movimientos cargados.
      */
-    private List<MovimientoGranel> cargarMovimientos(String archivo) {
-        List<MovimientoGranel> movimientos = new ArrayList<>();
-        File archivoMovimientos = new File(archivo);
-        if (archivoMovimientos.exists()) {
-            try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(archivo))) {
-                movimientos = (List<MovimientoGranel>) entrada.readObject();
-            } catch (IOException | ClassNotFoundException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return movimientos;
-    }
+//    private List<MovimientoGranel> cargarMovimientos(String archivo) {
+//        List<MovimientoGranel> movimientos = new ArrayList<>();
+//        File archivoMovimientos = new File(archivo);
+//        if (archivoMovimientos.exists()) {
+//            try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(archivo))) {
+//                movimientos = (List<MovimientoGranel>) entrada.readObject();
+//            } catch (IOException | ClassNotFoundException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+//        return movimientos;
+//    }
 
     /**
      * Agrega un nuevo movimiento de compra de un producto a granel al registro
@@ -127,10 +131,10 @@ public class MovimientosGranel {
      * @throws MovimientoInvalidoException Si el movimiento de compra es
      * inválido.
      */
-    public void agregarComprasGranel(MovimientoGranel movimientoGranel) throws MovimientoInvalidoException {
-
-        // verificar que el producto esté en el catálogo
-        if (!ProductosGranel.productosGranel.contains(movimientoGranel.getProductoGranel())) {
+    public void agregarComprasGranel(MovimientoGranel movimientoGranel) throws MovimientoInvalidoException { // cambiar a (String clave, fecha, cantidad)
+        // verificar que el producto esté en el catálogo. si no se encuentra en el catálogo no se puede hacer el movmiento
+        // System.out.println(movimientoGranel.getClaveProducto());
+        if (!Productos.existeProductoConClave(movimientoGranel.getClaveProducto())) {
             throw new MovimientoInvalidoException("El producto no se encuentra en el catálogo.");
         }
 
@@ -141,44 +145,63 @@ public class MovimientosGranel {
 
         // verificar que no haya otro movimiento de ese producto ese día 
         for (MovimientoGranel movimiento : compras) {
-            if (movimiento.getProductoGranel().equals(movimientoGranel.getProductoGranel()) && movimiento.getFecha().equals(movimientoGranel.getFecha())) {
+            if (movimiento.getClaveProducto().equals(movimientoGranel.getClaveProducto()) && movimiento.getFecha().equals(movimientoGranel.getFecha())) {
                 throw new MovimientoInvalidoException("Ya hay un movimiento de ese producto en la fecha especificada.");
             }
-        }
-
-        // verificar que al comprar el producto granel la cantidad total no sobrepase de 1500 o 3000
-        int cantidadTotal = 0;
-        for (MovimientoGranel movimiento : compras) {
-            if (movimiento.getProductoGranel().equals(movimientoGranel.getProductoGranel())) {
-                cantidadTotal += movimiento.getProductoGranel().getCantidad();
-            }
-        }
-        cantidadTotal += movimientoGranel.getProductoGranel().getCantidad();
-
-        if ("kg".equals(movimientoGranel.getProductoGranel().getUnidad())) {
-            if (cantidadTotal > LIMITE_MAX_KG) {
-                throw new MovimientoInvalidoException("La cantidad total del producto granel excede el límite permitido.");
-            }
-        } else if ("l".equals(movimientoGranel.getProductoGranel().getUnidad())) {
-            if (cantidadTotal > LIMITE_MAX_LT) {
-                throw new MovimientoInvalidoException("La cantidad total del producto granel excede el límite permitido.");
-            }
-        }
-
-        // actualizar el inventario
-        ProductoGranel producto = movimientoGranel.getProductoGranel();
-        if (ProductosGranel.productosGranel.contains(producto)) {
-            ProductoGranel productoExistente = ProductosGranel.productosGranel.get(ProductosGranel.productosGranel.indexOf(producto));
-            productoExistente.setCantidad(productoExistente.getCantidad() + movimientoGranel.getProductoGranel().getCantidad());
-        } else {
-            producto.setCantidad(movimientoGranel.getProductoGranel().getCantidad());
-            ProductosGranel.productosGranel.add(producto);
         }
 
         // agregar el movimiento a la lista de compras
         movimientoGranel.setStatus(false);
         compras.add(movimientoGranel);
-        guardarMovimientos(compras, archivoCompras);
+        // guardarMovimientos(compras, archivoCompras);
+
+    }
+
+    /**
+     * Procesa las compras de productos a granel.
+     *
+     * @throws MovimientoInvalidoException Si la cantidad total del producto
+     * granel excede el límite permitido.
+     * @throws ProductoNoEncontradoException Si no se encuentra el producto en
+     * la lista de productos.
+     * @throws ProductoExistenteException Si el producto ya existe en la lista
+     * de productos.
+     * @throws ProductoInvalidoException Si el producto es inválido.
+     */
+    public void procesarComprasGranel() throws MovimientoInvalidoException, ProductoNoEncontradoException, ProductoExistenteException, ProductoInvalidoException {
+        for (MovimientoGranel m : compras) {
+            String claveProducto = m.getClaveProducto();
+            Producto producto = Productos.consultarProducto(claveProducto);
+            ProductoGranel productoGranel = verificarExistaProducto(producto);
+        }
+
+        for (ProductoGranel p : ProductosGranel.productosGranel) {
+            float cantidadTotal = p.getCantidad();
+            for (MovimientoGranel movimientoGranel : compras) {
+                if (movimientoGranel.getClaveProducto().equals(p.getClave())) {
+                    if (movimientoGranel.getStatus() == false) {
+                        if ("kg".equalsIgnoreCase(Productos.consultarProducto(p.getClave()).getUnidad())) {
+                            if (cantidadTotal > LIMITE_MAX_KG) {
+                                throw new MovimientoInvalidoException("La cantidad total del producto granel excede el límite permitido.");
+                            }
+                        } else if ("l".equalsIgnoreCase(Productos.consultarProducto(p.getClave()).getUnidad())) {
+                            if (cantidadTotal > LIMITE_MAX_LT) {
+                                throw new MovimientoInvalidoException("La cantidad total del producto granel excede el límite permitido.");
+                            }
+
+                        }
+                        cantidadTotal += movimientoGranel.getCantidad();
+                        movimientoGranel.setStatus(true);
+
+                    }
+                }
+
+            }
+            p.setCantidad(cantidadTotal);
+
+        }
+
+        // guardarMovimientos(compras, archivoCompras);
     }
 
     /**
@@ -191,7 +214,7 @@ public class MovimientosGranel {
      */
     public void agregarVentasGranel(MovimientoGranel movimientoGranel) throws MovimientoInvalidoException {
         // verificar que el producto esté en el catálogo
-        if (!ProductosGranel.productosGranel.contains(movimientoGranel.getProductoGranel())) {
+        if (!Productos.existeProductoConClave(movimientoGranel.getClaveProducto())) {
             throw new MovimientoInvalidoException("El producto no se encuentra en el catálogo.");
         }
 
@@ -199,42 +222,79 @@ public class MovimientosGranel {
         if (movimientoGranel.getFecha().getAnio() != LocalDate.now().getYear() || movimientoGranel.getFecha().getMes() != LocalDate.now().getMonthValue() || movimientoGranel.getFecha().after(LocalDate.now())) {
             throw new MovimientoInvalidoException("La fecha del movimiento debe estar dentro del mes actual y no después de la fecha actual.");
         }
-
-        // verificar que el producto esté en el inventario
-        ProductoGranel productoGranel = movimientoGranel.getProductoGranel();
-        if (!ProductosGranel.productosGranel.contains(productoGranel)) {
-            throw new MovimientoInvalidoException("No es posible vender un producto granel que no existe en el inventario.");
-        }
-
-        // verificar que la cantidad a vender no sea mayor a la cantidad disponible
-        float cantidadDisponible = productoGranel.getCantidad();
-        float cantidadAVender = movimientoGranel.getProductoGranel().getCantidad();
-        if (cantidadAVender > cantidadDisponible) {
-            throw new MovimientoInvalidoException("No es posible vender una cantidad mayor a la disponible en el inventario.");
-        }
-
-        // verificar que al vender el producto granel la cantidad total no sea menos de 300 para kg y 900 para l
-        if ("kg".equals(movimientoGranel.getProductoGranel().getUnidad())) {
-            if (cantidadDisponible - cantidadAVender < LIMITE_MIN_KG) {
-                throw new MovimientoInvalidoException("La cantidad total del producto granel no puede ser menor al límite permitido.");
-            }
-        } else if ("l".equals(movimientoGranel.getProductoGranel().getUnidad())) {
-            if (cantidadDisponible - cantidadAVender < LIMITE_MIN_LT) {
-                throw new MovimientoInvalidoException("La cantidad total del producto granel no puede ser menor al límite permitido.");
-            }
-        }
-
-        // actualizar el inventario
-        productoGranel.setCantidad(cantidadDisponible - cantidadAVender);
-        if (productoGranel.getCantidad() == 0) {
-            ProductosGranel.productosGranel.remove(productoGranel);
-        }
-
+        
+        // agregar el movimiento a la lista de ventas
         movimientoGranel.setStatus(false);
         ventas.add(movimientoGranel);
-        guardarMovimientos(compras, archivoVentas);
+        // guardarMovimientos(compras, archivoVentas);
     }
+    
+    /**
+     * Procesa las ventas de productos a granel.
+     *
+     * @throws MovimientoInvalidoException Si la cantidad total del producto
+     * granel es menor al límite permitido o si se intenta vender más cantidad
+     * de la disponible en el inventario.
+     * @throws ProductoNoEncontradoException Si no se encuentra el producto en
+     * la lista de productos.
+     * @throws ProductoExistenteException Si el producto ya existe en la lista
+     * de productos.
+     * @throws ProductoInvalidoException Si el producto es inválido.
+     */
+    public void procesarVentasGranel() throws MovimientoInvalidoException, ProductoNoEncontradoException, ProductoExistenteException, ProductoInvalidoException {
 
+        for (ProductoGranel p : ProductosGranel.productosGranel) {
+            float cantidadTotal = p.getCantidad();
+            for (MovimientoGranel movimientoGranel : ventas) {
+                if (movimientoGranel.getClaveProducto().equals(p.getClave())) {
+                    cantidadTotal -= movimientoGranel.getCantidad();
+                    if ("kg".equalsIgnoreCase(Productos.consultarProducto(p.getClave()).getUnidad())) {
+                        if (cantidadTotal < LIMITE_MIN_KG) {
+                            throw new MovimientoInvalidoException("La cantidad total del producto granel no puede ser menor al límite permitido.");
+                        }
+                    } else if ("l".equalsIgnoreCase(Productos.consultarProducto(p.getClave()).getUnidad())) {
+                        if (cantidadTotal < LIMITE_MIN_LT) {
+                            throw new MovimientoInvalidoException("La cantidad total del producto granel no puede ser menor al límite permitido.");
+                        }
+                    }
+                    // verificar que la cantidad a vender no sea mayor a la cantidad disponible
+                    if (cantidadTotal < 0) {
+                        throw new MovimientoInvalidoException("No es posible vender una cantidad mayor a la disponible en el inventario.");
+                    }
+                    if (cantidadTotal == 0) {
+                        ProductosGranel.productosGranel.remove(p); // nunca llegará a está línea porque siempre estará primero la excepción de MovimientoInvalidoException
+                    } else {
+                        p.setCantidad(cantidadTotal);
+                        movimientoGranel.setStatus(true);
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Verifica si un producto granel ya existe en la lista de productos a
+     * granel. Si el producto no existe, lo agrega a la lista de productos a
+     * granel.
+     *
+     * @param producto El producto a verificar.
+     * @return El producto granel si ya existe en la lista, de lo contrario,
+     * agrega el producto a la lista y lo devuelve.
+     * @throws ProductoExistenteException Si el producto granel ya existe en la
+     * lista de productos a granel.
+     * @throws ProductoInvalidoException Si el producto es inválido.
+     */
+    public ProductoGranel verificarExistaProducto(Producto producto) throws ProductoExistenteException, ProductoInvalidoException {
+        for (ProductoGranel p : ProductosGranel.productosGranel) {
+            if (p.getClave().equalsIgnoreCase(producto.getClave())) {
+                return p;
+            }
+        }
+        ProductoGranel productoGranel = new ProductoGranel(producto.getClave(), producto.getNombre(), producto.getTipo(), producto.getUnidad());
+        ProductosGranel.agregarProductoGranel(productoGranel);
+        return productoGranel;
+    }
+    
     /**
      * Consulta el registro de compras de productos a granel.
      *
