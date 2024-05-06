@@ -26,7 +26,7 @@ public class Productos {
     /**
      * Lista que almacena los productos.
      */
-    public List<Producto> productos; 
+    public static List<Producto> productos; // "catálogo" "productos que se manejan" 
     
     /**
      * Nombre del archivo en el que se guardarán los productos.
@@ -39,32 +39,51 @@ public class Productos {
      */
     public Productos() {
         this.productos = new ArrayList<>();
-        cargarProductos(); // cargar productos al iniciar la instancia
+        // cargarProductos(); // cargar productos al iniciar la instancia
     }
 
     /**
      * Guarda los productos en el archivo.
      */
-    private void guardarProductos() { // guarda los productos en el archivo
-        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(archivo))) { // se crea un ObjectOutputStream para escribir en el archivo productos.dat
-            salida.writeObject(productos); // se escribe la lista de productos en el archivo
-        } catch (IOException ex) {
-            ex.printStackTrace(); // si ocurre alguna excepción durante la escritura, se imprime el error
-        }
-    }
+//    private void guardarProductos() { // guarda los productos en el archivo
+//        try (ObjectOutputStream salida = new ObjectOutputStream(new FileOutputStream(archivo))) { // se crea un ObjectOutputStream para escribir en el archivo productos.dat
+//            salida.writeObject(productos); // se escribe la lista de productos en el archivo
+//        } catch (IOException ex) {
+//            ex.printStackTrace(); // si ocurre alguna excepción durante la escritura, se imprime el error
+//        }
+//    }
 
     /**
      * Carga los productos desde el archivo.
      */
-    private void cargarProductos() { // carga los productos desde el archivo
-        File archivoProductos = new File(archivo); // se crea un objeto File con el nombre del archivo de persistencia
-        if (archivoProductos.exists()) {
-            try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(archivo))) { // se crea un ObjectInputStream para leer desde el archivo productos.dat
-                productos = (List<Producto>) entrada.readObject(); // se lee la lista de productos desde el archivo y se asigna a la variable productos
-            } catch (IOException | ClassNotFoundException ex) {
-                ex.printStackTrace(); // si ocurre alguna excepción durante la lectura, se imprime el error
+//    private void cargarProductos() { // carga los productos desde el archivo
+//        File archivoProductos = new File(archivo); // se crea un objeto File con el nombre del archivo de persistencia
+//        if (archivoProductos.exists()) {
+//            try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(archivo))) { // se crea un ObjectInputStream para leer desde el archivo productos.dat
+//                productos = (List<Producto>) entrada.readObject(); // se lee la lista de productos desde el archivo y se asigna a la variable productos
+//            } catch (IOException | ClassNotFoundException ex) {
+//                ex.printStackTrace(); // si ocurre alguna excepción durante la lectura, se imprime el error
+//            }
+//        }
+//    }
+    
+    /**
+     * Comprueba si existe un producto con la clave especificada en la lista de
+     * productos.
+     *
+     * @param clave La clave del producto que se quiere buscar.
+     * @return true si existe un producto con la clave especificada, false en
+     * caso contrario.
+     */
+    public static boolean existeProductoConClave(String clave) {
+        for (Producto producto : productos) {
+            // System.out.print(producto.getClave());
+            // System.out.print(clave);
+            if (producto.getClave() == clave) {
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -76,7 +95,7 @@ public class Productos {
      * catálogo.
      */
     public void agregarProducto(Producto producto) throws ProductoInvalidoException, ProductoExistenteException {
-        if (productos.contains(producto)) {
+         if (existeProductoConClave(producto.getClave())) {
             throw new ProductoExistenteException("El producto ya existe.");
         }
 
@@ -88,7 +107,7 @@ public class Productos {
             throw new ProductoInvalidoException("El producto debe tener nombre, tipo y unidad.");
         }
 
-        if (!producto.getUnidad().equals("kg") && !producto.getUnidad().equals("l")) {
+        if (!producto.getUnidad().equalsIgnoreCase("kg") && !producto.getUnidad().equalsIgnoreCase("l")) {
             throw new ProductoInvalidoException("La unidad del producto debe ser kg o l");
         }
 
@@ -97,7 +116,7 @@ public class Productos {
         }
 
         productos.add(producto);
-        guardarProductos();
+        // guardarProductos();
 
     }
 
@@ -109,7 +128,7 @@ public class Productos {
      * @throws ProductoNoEncontradoException Si el producto no existe en el
      * catálogo.
      */
-    public Producto consultarProducto(String clave) throws ProductoNoEncontradoException {
+    public static Producto consultarProducto(String clave) throws ProductoNoEncontradoException {
         for (Producto producto : productos) {
             if (producto.getClave().equals(clave)) {
                 return producto;
@@ -141,7 +160,7 @@ public class Productos {
             throw new ProductoInvalidoException("El producto debe tener nombre, tipo y unidad.");
         }
 
-        if (!producto.getUnidad().equals("kg") && !producto.getUnidad().equals("l")) {
+        if (!producto.getUnidad().equalsIgnoreCase("kg") && !producto.getUnidad().equalsIgnoreCase("l")) { // ignore case pues ignora las mayusculas o minusculas
             throw new ProductoInvalidoException("La unidad del producto debe ser kg o l");
         }
 
@@ -150,7 +169,7 @@ public class Productos {
         }
 
         productos.set(productos.indexOf(producto), producto);
-        guardarProductos();
+        // guardarProductos();
     }
 
     /**
@@ -162,9 +181,9 @@ public class Productos {
      */
     public void eliminarProducto(String clave) throws ProductoNoEncontradoException {
         for (Producto producto : productos) {
-            if (producto.getClave().equals(clave)) {
+            if (producto.getClave().equalsIgnoreCase(clave)) {
                 productos.remove(producto);
-                guardarProductos();
+                // guardarProductos();
                 return;
             }
         }
@@ -189,7 +208,7 @@ public class Productos {
     public List<Producto> consultarProductosPorClave(String clave) {
         List<Producto> productosPorClave = new ArrayList<>();
         for (Producto producto : productos) {
-            if (producto.getClave().equals(clave)) {
+            if (producto.getClave().equalsIgnoreCase(clave)) {
                 productosPorClave.add(producto);
             }
         }
@@ -205,7 +224,7 @@ public class Productos {
     public List<Producto> consultarProductosPorTipo(String tipo) {
         List<Producto> productosPorTipo = new ArrayList<>();
         for (Producto producto : productos) {
-            if (producto.getTipo().equals(tipo)) {
+            if (producto.getTipo().equalsIgnoreCase(tipo)) {
                 productosPorTipo.add(producto);
             }
         }
@@ -221,7 +240,7 @@ public class Productos {
     public List<Producto> consultarProductosPorUnidad(String unidad) {
         List<Producto> productosPorUnidad = new ArrayList<>();
         for (Producto producto : productos) {
-            if (producto.getUnidad().equals(unidad)) {
+            if (producto.getUnidad().equalsIgnoreCase(unidad)) {
                 productosPorUnidad.add(producto);
             }
         }
