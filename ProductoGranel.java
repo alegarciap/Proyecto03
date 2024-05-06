@@ -28,6 +28,18 @@ public class ProductoGranel extends Producto {
         super(clave, nombre, tipo, unidad);
         this.cantidad = cantidad;
     }
+    
+    /**
+     * Constructor que inicializa los atributos con los valores proporcionados.
+     *
+     * @param clave La clave del producto a granel.
+     * @param nombre El nombre del producto a granel.
+     * @param tipo El tipo del producto a granel.
+     * @param unidad La unidad del producto a granel.
+     */
+    public ProductoGranel(String clave, String nombre, String tipo, String unidad) {
+        super(clave, nombre, tipo, unidad);
+    }
 
     /**
      * Obtiene la cantidad del producto a granel.
